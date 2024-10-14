@@ -1,0 +1,39 @@
+#include <Arduino.h>
+
+//Potenciometros
+#define Pot1 23 
+#define Pot2 19
+//Leer potenciometros
+int valorPot1 = 0; 
+int valorPot2 = 0;
+//mapeo potenciometros
+int mapPot1 = 0; 
+int mapPot2 = 0;
+
+void setup() {
+  Serial2.begin(115200, SERIAL_8N1, 16, 17);
+}
+
+void loop() {
+ valorPot1 = analogRead(Pot1);
+ mapPot1 = map(valorPot1, 0, 4095, 0, 9);
+ valorPot2 = analogRead(Pot2);
+ mapPot2 = map(valorPot2, 0, 4095, 0, 9);
+  
+int sensores[2] = {mapPot1, mapPot2};
+
+  if (Serial2.available() > 0){
+    String botones = Serial2.readString();
+    int bn=botones.toInt();
+
+    if (bn == 0){
+      Serial2.write(mapPot1);
+    }
+    if (bn == 1){
+      Serial2.write(mapPot2);
+    }
+  }
+
+  delay(500);
+}
+
